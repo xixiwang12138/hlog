@@ -16,7 +16,7 @@ type LogRecord struct {
 	MongoModel `bson:",inline"`
 	User       string     `json:"user,omitempty" bson:"user"`
 	RequestId  string     `json:"requestId,omitempty" bson:"requestId"`   //请求链路唯一id
-	Level      Level      `json:"level,omitempty" bson:"level"`           //日志等级
+	Level      string     `json:"level,omitempty" bson:"level"`           //日志等级
 	CreateTime *time.Time `json:"createTime,omitempty" bson:"createTime"` //日志记录创建时间
 	FuncName   string     `json:"funcName,omitempty" bson:"funcName"`     //日志创建的函数
 	Line       int32      `json:"line,omitempty" bson:"line"`             //日志产生的行数
@@ -36,16 +36,22 @@ func (rep *logRepo) Output(lg *log) {
 	lr := &LogRecord{
 		User:       lg.user,
 		RequestId:  lg.requestId,
-		Level:      lg.level,
+		Level:      lg.level.Name(),
 		CreateTime: lg.createTime,
 		FuncName:   lg.funcName,
 		Line:       lg.line,
 		Msg:        lg.msg,
 		File:       lg.file,
-		Input:      utils.Serialize(lg.input),
-		Err:        lg.err.Error(),
 		MayCause:   lg.mayCause,
-		Stack:      string(lg.stack),
+	}
+	if lg.input != nil {
+		lr.Input = utils.Serialize(lg.input)
+	}
+	if lg.stack != nil {
+		lr.Stack = string(lg.stack)
+	}
+	if lg.err != nil {
+		lr.Err = lg.err.Error()
 	}
 	err := rep.MongoRepo.Create(lr)
 	fmt.Println(err) //TODO 设置错误处理

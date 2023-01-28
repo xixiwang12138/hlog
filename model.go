@@ -18,6 +18,12 @@ const (
 	LevelError
 )
 
+var LevelList = []string{"Debug", "Info", "Warn", "Error"}
+
+func (level Level) Name() string {
+	return LevelList[level]
+}
+
 type log struct {
 	user       string     //请求用户标识
 	requestId  string     //请求链路唯一id
@@ -34,7 +40,7 @@ type log struct {
 	stack    []byte //堆栈信息
 }
 
-const SkipNum = 2
+const SkipNum = 3
 
 func newLog(user string, id string, level Level, createTime *time.Time, msg string) *log {
 	l := &log{user: user, requestId: id, level: level, createTime: createTime, msg: msg}
