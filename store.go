@@ -2,9 +2,9 @@ package hlog
 
 import (
 	"fmt"
+	"github.com/xixiwang12138/hlog/internal/repo"
+	"github.com/xixiwang12138/hlog/internal/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"hlog/internal/repo"
-	"hlog/internal/utils"
 	"time"
 )
 

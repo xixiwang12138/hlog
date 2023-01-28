@@ -1,8 +1,8 @@
 package hlog
 
 import (
-	"hlog/internal/conf"
-	"hlog/internal/sources"
+	"github.com/xixiwang12138/hlog/conf"
+	"github.com/xixiwang12138/hlog/internal/sources"
 	"runtime/debug"
 	"time"
 )

@@ -3,10 +3,10 @@ package sources
 import (
 	"context"
 	"fmt"
+	"github.com/xixiwang12138/hlog/conf"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"hlog/internal/conf"
 	"log"
 )
 
