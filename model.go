@@ -12,11 +12,10 @@ type metadata struct {
 type Level uint8
 
 const (
-	Debug Level = iota
-	Info
-	Warn
-	Error
-	Fatal
+	LevelDebug Level = iota
+	LevelInfo
+	LevelWarn
+	LevelError
 )
 
 type log struct {

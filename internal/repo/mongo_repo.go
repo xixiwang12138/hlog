@@ -24,7 +24,7 @@ func NewMongoRepo[M any]() *MongoRepo[M] {
 	return rep
 }
 
-func (rep *MongoRepo[M]) SetupRepo() {
+func (rep *MongoRepo[M]) Setup() {
 	var m M
 	rep.collectionName = reflect.TypeOf(m).Name()
 	rep.collection = sources.MongoSource.GetOrCreateCollection(rep.collectionName)

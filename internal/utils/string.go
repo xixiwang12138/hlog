@@ -20,7 +20,7 @@ func StringPort2Int(port string) int {
 	arr := strings.Split(port, ":")
 	PortInt, err := strconv.Atoi(arr[len(arr)-1])
 	if err != nil {
-		log.Println("[Port To Int Err]", err)
+		log.Println("[Port To Int Error]", err)
 	}
 	return PortInt
 }
