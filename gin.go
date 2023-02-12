@@ -19,7 +19,7 @@ func TracingLogger(conf *GormLoggerConf) gin.HandlerFunc {
 		// TODO 打点
 		traceId := ctx.GetHeader(global.RequestIdHeader)
 		if traceId == "" {
-			traceId = generateId()
+			traceId = global.NextId(ctx)
 			ctx.Header(global.RequestIdHeader, traceId)
 		}
 		l := NewLoggerFromRequestId(traceId)

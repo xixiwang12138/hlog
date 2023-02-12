@@ -1,4 +1,4 @@
-package hlog
+package _test
 
 import (
 	"fmt"

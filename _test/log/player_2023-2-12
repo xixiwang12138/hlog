@@ -1,0 +1,27 @@
+{"reqId":"hello","Level":"Error","time":"2023/02/12 12:34:57.102","place":"/Users/xixi/go/hlog/_test/file_out_test.go.17","msg":"",
+"err":"数据库连接错误","cause":"数据库","stack":""}
+{"reqId":"hello","Level":"Error","time":"2023/02/12 12:39:27.744","place":"/Users/xixi/go/hlog/_test/file_out_test.go.17","msg":"","err":"数据库连接错误","cause":"数据库","stack":"goroutine 21 [running]:
+runtime/debug.Stack()
+	/usr/local/go/src/runtime/debug/stack.go:24 +0x64
+github.com/xixiwang12138/hlog.(*Logger).ErrorWithStack(0x14000442480, {0x1056e2b60, 0x1400000e078}, {0x105566930, 0x9}, {0x1400044c0f0, 0x1, 0x1})
+	/Users/xixi/go/hlog/logger.go:103 +0xe8
+command-line-arguments_test.TestFileOut(0x140004441a0)
+	/Users/xixi/go/hlog/_test/file_out_test.go:17 +0x1b8
+testing.tRunner(0x140004441a0, 0x1056dee60)
+	/usr/local/go/src/testing/testing.go:1446 +0x174
+created by testing.(*T).Run
+	/usr/local/go/src/testing/testing.go:1493 +0x540
+"}
+{"reqId":"hello","Level":"Error","time":"2023/02/12 12:40:21.546","place":"/Users/xixi/go/hlog/_test/file_out_test.go.17","msg":"","err":"数据库连接错误","cause":"数据库","stack":"goroutine 7 [running]:
+runtime/debug.Stack()
+	/usr/local/go/src/runtime/debug/stack.go:24 +0x64
+github.com/xixiwang12138/hlog.(*Logger).ErrorWithStack(0x14000490150, {0x10558eb60, 0x140004a0030}, {0x105412b50, 0x9}, {0x14000492290, 0x1, 0x1})
+	/Users/xixi/go/hlog/logger.go:103 +0xe8
+command-line-arguments_test.TestFileOut(0x14000482340)
+	/Users/xixi/go/hlog/_test/file_out_test.go:17 +0x1c0
+testing.tRunner(0x14000482340, 0x10558ae60)
+	/usr/local/go/src/testing/testing.go:1446 +0x174
+created by testing.(*T).Run
+	/usr/local/go/src/testing/testing.go:1493 +0x540
+"}
+{"reqId":"hello","Level":"Error","time":"2023/02/12 12:40:21.546","place":"/Users/xixi/go/hlog/_test/file_out_test.go.18","msg":"","err":"网络超时","cause":"http","stack":""}

@@ -1,33 +1,39 @@
 package hlog
 
+import "context"
+
+type RequestIdGenerator interface {
+	NextId(ctx context.Context) string
+}
+
 //type RequestContext interface {
 //	GetRequestId() string
 //}
 
 //type HLogger interface {
-//	Debug(ctx RequestContext, msg string)
-//	Info(ctx RequestContext, msg string)
-//	Warn(ctx RequestContext, msg string)
-//	Error(ctx RequestContext, err error, mayReason string, input ...any)
-//	ErrorWithStack(ctx RequestContext, err error, mayReason string, input ...any)
+//	Debug(ctx RequestContext, Msg string)
+//	Info(ctx RequestContext, Msg string)
+//	Warn(ctx RequestContext, Msg string)
+//	Error(ctx RequestContext, Err error, mayReason string, Input ...any)
+//	ErrorWithStack(ctx RequestContext, Err error, mayReason string, Input ...any)
 //}
 
-//func Debug(ctx RequestContext, msg string) {
-//	GetLogger().Debug(ctx, msg)
+//func Debug(ctx RequestContext, Msg string) {
+//	GetLogger().Debug(ctx, Msg)
 //}
 //
-//func Info(ctx RequestContext, msg string) {
-//	GetLogger().Info(ctx, msg)
+//func Info(ctx RequestContext, Msg string) {
+//	GetLogger().Info(ctx, Msg)
 //}
 //
-//func Warn(ctx RequestContext, msg string) {
-//	GetLogger().Warn(ctx, msg)
+//func Warn(ctx RequestContext, Msg string) {
+//	GetLogger().Warn(ctx, Msg)
 //}
 //
-//func Error(ctx RequestContext, err error, mayReason string, input ...any) {
-//	GetLogger().Error(ctx, err, mayReason, input...)
+//func Error(ctx RequestContext, Err error, mayReason string, Input ...any) {
+//	GetLogger().Error(ctx, Err, mayReason, Input...)
 //}
 //
-//func ErrorWithStack(ctx RequestContext, err error, mayReason string, input ...any) {
-//	GetLogger().ErrorWithStack(ctx, err, mayReason, input...)
+//func ErrorWithStack(ctx RequestContext, Err error, mayReason string, Input ...any) {
+//	GetLogger().ErrorWithStack(ctx, Err, mayReason, Input...)
 //}

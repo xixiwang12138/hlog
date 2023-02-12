@@ -3,7 +3,7 @@ package conf
 type ENV uint8
 
 const (
-	DEV ENV = iota
+	Dev ENV = iota
 	Prod
 )
 

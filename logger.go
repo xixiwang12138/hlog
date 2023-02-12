@@ -2,25 +2,13 @@ package hlog
 
 import (
 	"context"
-	"github.com/xixiwang12138/hlog/conf"
-	"github.com/xixiwang12138/hlog/internal/sources"
+	. "github.com/xixiwang12138/hlog/decode"
 	"runtime/debug"
 	"time"
 )
 
-var (
-	MongoLogCollector = &logRepo{}
-	DefaultCollector  = MongoLogCollector
-	DefaultLogger     = &Logger{putter: MongoLogCollector, requestId: "init_context"}
-)
-
-func SetMongoCollector(mongo *conf.MongoDBConfig) {
-	sources.MongoSource.Setup(mongo)
-	MongoLogCollector.Setup()
-}
-
 type OutPutter interface {
-	Output(lg *log)
+	Output(lg *Log)
 }
 
 type Logger struct {
@@ -63,11 +51,11 @@ func NewLogger(ctx context.Context) *Logger {
 	if reqId == "" {
 		panic("Cannot Find Tracing Context")
 	}
-	return &Logger{putter: DefaultCollector, requestId: reqId, metadata: map[string]any{}}
+	return &Logger{putter: global.OutPutter, requestId: reqId, metadata: map[string]any{}}
 }
 
 func NewLoggerFromRequestId(req string) *Logger {
-	return &Logger{putter: DefaultCollector, requestId: req, metadata: map[string]any{}}
+	return &Logger{putter: global.OutPutter, requestId: req, metadata: map[string]any{}}
 }
 
 // Opentracing
@@ -80,40 +68,37 @@ func (l *Logger) StartSpan() *Logger { //TODO 集成Opentracing api规范
 
 func (l *Logger) Debug(msg string) {
 	now := time.Now()
-	log := newLog(l.GetRequestId(), LevelDebug, &now, msg)
+	log := NewLog(l.GetRequestId(), LevelDebug, &now, msg)
 	l.putter.Output(log)
 }
 
 func (l *Logger) Info(msg string) {
 	now := time.Now()
-	log := newLog(l.GetRequestId(), LevelInfo, &now, msg)
+	log := NewLog(l.GetRequestId(), LevelInfo, &now, msg)
 	l.putter.Output(log)
 }
 
 func (l *Logger) Warn(msg string) {
 	now := time.Now()
-	log := newLog(l.GetRequestId(), LevelWarn, &now, msg)
+	log := NewLog(l.GetRequestId(), LevelWarn, &now, msg)
 	l.putter.Output(log)
 }
 
 func (l *Logger) Error(err error, mayReason string, input ...any) {
 	now := time.Now()
-	log := newLog(l.GetRequestId(), LevelError, &now, "")
+	log := NewLog(l.GetRequestId(), LevelError, &now, "")
 	log.SetError(err)
-	if len(input) >= 1 {
-		log.SetArgs(input[0])
-	}
+	log.SetArgs(input)
+
 	log.SetMayCause(mayReason)
 	l.putter.Output(log)
 }
 
 func (l *Logger) ErrorWithStack(err error, mayReason string, input ...any) {
 	now := time.Now()
-	log := newLog(l.GetRequestId(), LevelError, &now, "")
+	log := NewLog(l.GetRequestId(), LevelError, &now, "")
 	log.SetError(err)
-	if len(input) >= 1 {
-		log.SetArgs(input[0])
-	}
+	log.SetArgs(input)
 	log.SetMayCause(mayReason)
 	log.SetStack(debug.Stack())
 	l.putter.Output(log)

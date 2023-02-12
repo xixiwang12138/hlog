@@ -1,7 +1,8 @@
-package hlog
+package collector
 
 import (
 	"fmt"
+	"github.com/xixiwang12138/hlog/decode"
 	"github.com/xixiwang12138/hlog/internal/repo"
 	"github.com/xixiwang12138/hlog/internal/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -26,28 +27,28 @@ type logRecord struct {
 	Stack      string     `json:"stack,omitempty" bson:"stack"`       //堆栈信息
 }
 
-type logRepo struct {
+type LogRepo struct {
 	repo.MongoRepo[logRecord]
 }
 
-func (rep *logRepo) Output(lg *log) {
+func (rep *LogRepo) Output(lg *decode.Log) {
 	lr := &logRecord{
-		RequestId:  lg.requestId,
-		Level:      lg.level.Name(),
-		CreateTime: lg.createTime,
-		Line:       lg.line,
-		Msg:        lg.msg,
-		File:       lg.file,
-		MayCause:   lg.mayCause,
+		RequestId:  lg.RequestId,
+		Level:      lg.Level.Name(),
+		CreateTime: lg.CreateTime,
+		Line:       lg.Line,
+		Msg:        lg.Msg,
+		File:       lg.File,
+		MayCause:   lg.MayCause,
 	}
-	if lg.input != nil {
-		lr.Input = utils.Serialize(lg.input)
+	if lg.Input != nil {
+		lr.Input = utils.Serialize(lg.Input)
 	}
-	if lg.stack != nil {
-		lr.Stack = string(lg.stack)
+	if lg.Stack != nil {
+		lr.Stack = string(lg.Stack)
 	}
-	if lg.err != nil {
-		lr.Err = lg.err.Error()
+	if lg.Err != nil {
+		lr.Err = lg.Err.Error()
 	}
 	err := rep.MongoRepo.Create(lr)
 	fmt.Println(err) //TODO 设置错误处理

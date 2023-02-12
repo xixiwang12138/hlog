@@ -1,4 +1,4 @@
-package hlog
+package _test
 
 import (
 	"fmt"
@@ -20,15 +20,13 @@ func (H *HTTPReq) GetUserFlag() string {
 }
 
 func TestInsert(t *testing.T) {
-	c := &conf.MongoDBConfig{
+	_ = &conf.MongoDBConfig{
 		UserName: "admin-all",
 		Password: "B8ZC7DaEONQknCv",
 		Host:     "111.230.227.84",
 		Port:     "27016",
 		DataBase: "Homi",
 	}
-	SetMongoCollector(c)
-
 	req := &HTTPReq{
 		Name: "openid-3",
 		Id:   "a543b54ad",
