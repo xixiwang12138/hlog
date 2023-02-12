@@ -8,18 +8,16 @@ import (
 	"time"
 )
 
-type MongoModel struct {
-	ID primitive.ObjectID `bson:"_id"`
+type mongoModel struct {
+	ID *primitive.ObjectID `json:"_id" bson:"_id,omitempty"`
 }
 
-type LogRecord struct {
-	MongoModel `bson:",inline"`
-	User       string     `json:"user,omitempty" bson:"user"`
+type logRecord struct {
+	mongoModel `bson:",inline"`
 	RequestId  string     `json:"requestId,omitempty" bson:"requestId"`   //请求链路唯一id
 	Level      string     `json:"level,omitempty" bson:"level"`           //日志等级
 	CreateTime *time.Time `json:"createTime,omitempty" bson:"createTime"` //日志记录创建时间
-	FuncName   string     `json:"funcName,omitempty" bson:"funcName"`     //日志创建的函数
-	Line       int32      `json:"line,omitempty" bson:"line"`             //日志产生的行数
+	Line       uint32     `json:"line,omitempty" bson:"line"`             //日志产生的行数
 	File       string     `json:"file,omitempty" bson:"file"`             //日志产生的文件
 	Msg        string     `json:"msg,omitempty" bson:"msg"`
 	Input      string     `json:"input,omitempty" bson:"input"`       //输入的参数
@@ -29,16 +27,14 @@ type LogRecord struct {
 }
 
 type logRepo struct {
-	repo.MongoRepo[LogRecord]
+	repo.MongoRepo[logRecord]
 }
 
 func (rep *logRepo) Output(lg *log) {
-	lr := &LogRecord{
-		User:       lg.user,
+	lr := &logRecord{
 		RequestId:  lg.requestId,
 		Level:      lg.level.Name(),
 		CreateTime: lg.createTime,
-		FuncName:   lg.funcName,
 		Line:       lg.line,
 		Msg:        lg.msg,
 		File:       lg.file,

@@ -1,6 +1,7 @@
 package hlog
 
 import (
+	"context"
 	"github.com/xixiwang12138/hlog/conf"
 	"github.com/xixiwang12138/hlog/internal/sources"
 	"runtime/debug"
@@ -9,12 +10,9 @@ import (
 
 var (
 	MongoLogCollector = &logRepo{}
-	DefaultLogger     = &Logger{putter: MongoLogCollector}
+	DefaultCollector  = MongoLogCollector
+	DefaultLogger     = &Logger{putter: MongoLogCollector, requestId: "init_context"}
 )
-
-func GetLogger() *Logger {
-	return DefaultLogger
-}
 
 func SetMongoCollector(mongo *conf.MongoDBConfig) {
 	sources.MongoSource.Setup(mongo)
@@ -26,30 +24,81 @@ type OutPutter interface {
 }
 
 type Logger struct {
-	putter OutPutter
+	requestId string
+	metadata  map[string]any
+	putter    OutPutter
 }
 
-func (l *Logger) Debug(ctx RequestContext, msg string) {
+// Implement context.Context
+
+func (l *Logger) Deadline() (deadline time.Time, ok bool) {
+	return
+}
+
+func (l *Logger) Done() <-chan struct{} {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (l *Logger) Err() error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (l *Logger) Value(key any) any {
+	if key == global.RequestIdHeader {
+		return l.GetRequestId()
+	}
+	return l.metadata[key.(string)]
+}
+
+func (l *Logger) GetRequestId() string {
+	return l.requestId
+}
+
+// Constructor
+
+func NewLogger(ctx context.Context) *Logger {
+	reqId := ctx.Value(global.RequestIdHeader).(string)
+	if reqId == "" {
+		panic("Cannot Find Tracing Context")
+	}
+	return &Logger{putter: DefaultCollector, requestId: reqId, metadata: map[string]any{}}
+}
+
+func NewLoggerFromRequestId(req string) *Logger {
+	return &Logger{putter: DefaultCollector, requestId: req, metadata: map[string]any{}}
+}
+
+// Opentracing
+
+func (l *Logger) StartSpan() *Logger { //TODO 集成Opentracing api规范
+	return l
+}
+
+// Api
+
+func (l *Logger) Debug(msg string) {
 	now := time.Now()
-	log := newLog(ctx.GetUserFlag(), ctx.GetRequestId(), LevelDebug, &now, msg)
+	log := newLog(l.GetRequestId(), LevelDebug, &now, msg)
 	l.putter.Output(log)
 }
 
-func (l *Logger) Info(ctx RequestContext, msg string) {
+func (l *Logger) Info(msg string) {
 	now := time.Now()
-	log := newLog(ctx.GetUserFlag(), ctx.GetRequestId(), LevelInfo, &now, msg)
+	log := newLog(l.GetRequestId(), LevelInfo, &now, msg)
 	l.putter.Output(log)
 }
 
-func (l *Logger) Warn(ctx RequestContext, msg string) {
+func (l *Logger) Warn(msg string) {
 	now := time.Now()
-	log := newLog(ctx.GetUserFlag(), ctx.GetRequestId(), LevelWarn, &now, msg)
+	log := newLog(l.GetRequestId(), LevelWarn, &now, msg)
 	l.putter.Output(log)
 }
 
-func (l *Logger) Error(ctx RequestContext, err error, mayReason string, input ...any) {
+func (l *Logger) Error(err error, mayReason string, input ...any) {
 	now := time.Now()
-	log := newLog(ctx.GetUserFlag(), ctx.GetRequestId(), LevelError, &now, "")
+	log := newLog(l.GetRequestId(), LevelError, &now, "")
 	log.SetError(err)
 	if len(input) >= 1 {
 		log.SetArgs(input[0])
@@ -58,9 +107,9 @@ func (l *Logger) Error(ctx RequestContext, err error, mayReason string, input ..
 	l.putter.Output(log)
 }
 
-func (l *Logger) ErrorWithStack(ctx RequestContext, err error, mayReason string, input ...any) {
+func (l *Logger) ErrorWithStack(err error, mayReason string, input ...any) {
 	now := time.Now()
-	log := newLog(ctx.GetUserFlag(), ctx.GetRequestId(), LevelError, &now, "")
+	log := newLog(l.GetRequestId(), LevelError, &now, "")
 	log.SetError(err)
 	if len(input) >= 1 {
 		log.SetArgs(input[0])
